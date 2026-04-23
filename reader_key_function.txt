@@ -1,0 +1,16 @@
+Key Additions:
+- **Dependencies:** Added `easyocr`, `pillow`, and `opencv-python` to `requirements.txt` for OCR and image processing.
+- **UI Update:** Added a "🔍 Scan" button next to the slip image upload controls in the "New Entry" tab.
+- **Functionality:** Created a `_scan_slip` method that performs OCR on the uploaded image, extracts readable text, and displays it in a dialog box for user review.
+
+### How the Scan Works:
+1. User uploads a slip image via the "Browse" button.
+2. Clicking "Scan" initiates OCR using EasyOCR to extract text from the image.
+3. A message box pops up showing all extracted text, allowing manual review.
+4. This provides a foundation for the agent's role in reading slips for details like slip type, timestamp, account names, amounts, and notes.
+
+This implementation starts the scanning capability as described in `Reader.md`. For full automation—such as recognizing patterns in future uploads, parsing specific fields, or prompting users to mark areas on new slips—further development can be added. The scan runs in a thread to keep the UI responsive.
+
+If you run the app, try uploading a slip image and clicking the Scan button. Ensure the new packages are installed (I handled the installation in the project).
+
+Let me know if you'd like to refine this, such as integrating with the form fields or adding pattern matching!

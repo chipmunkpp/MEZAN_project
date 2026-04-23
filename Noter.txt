@@ -1,0 +1,499 @@
+================================================================
+  NOTER — Saver 98 Update Agent
+  Auto-updated on every version change
+================================================================
+
+PROJECT: Saver 98 — Personal Revenue Assistant (Windows 95-98 Style)
+STACK  : Electron + vanilla HTML/CSS/JS (single-file renderer)
+FILE   : index.html  |  main.js  |  preload.js
+DATA   : localStorage + Electron %APPDATA% file-sync via window.api
+
+================================================================
+  VERSION 1.0  —  Initial Release
+================================================================
+Date   : 2026-04
+Status : Released
+
+Features:
+  - Windows 98–style desktop UI (teal background, beveled borders)
+  - Dashboard with KPI cards: Today / Month / Year / Balance
+  - Add Transaction form (date, description, amount, category, type, account)
+  - Transaction History with search, date range, type filter, sortable columns
+  - Charts window: 7-day bar, category pie, 6-month line
+  - Settings: currency selector, income/expense categories, data management
+  - Sticky Notes with reactions (👍❤️😂😮) and threaded comments
+  - Export CSV / JSON, Import CSV / JSON
+  - Desktop icons, taskbar, Start Menu, context menu, clock
+  - Electron persistence bridge (saves to disk, falls back to localStorage)
+  - Sample seed data on first launch
+
+================================================================
+  VERSION 1.1  —  Update 1.1
+================================================================
+Date   : 2026-04-10
+Status : Released
+
+Changes:
+  1. IMAGE UPLOAD BUTTON
+     - Added "📎 Attach" file picker in Add Transaction form
+     - Supports any image format; max size 3 MB
+     - Shows thumbnail preview + filename after selection
+     - Image stored as base64 inside transaction object
+     - Cleared automatically when form is reset or ✕ clicked
+
+  2. IMAGES DESKTOP ICON & GALLERY WINDOW (win-images)
+     - New "🖼️ Images" desktop icon added to left panel
+     - Opens "Image Gallery" window listing all transactions with images
+     - 130×90 px thumbnail cards with description + date labels
+     - Double-click any card to open full-size image viewer (lightbox)
+     - Status bar shows total image count
+     - Icons repositioned: Settings → 436 px, Sticky Notes → 520 px
+
+  3. DESCRIPTION OPTIONAL
+     - Description field no longer blocks submission when empty
+     - Shows Win98-style warning dialog: "Description is empty — Add anyway?"
+     - User can confirm (OK) or cancel to go back and fill it in
+
+  4. STICKY NOTE PIN FEATURE
+     - Added 📍 pin button to every sticky note title bar
+     - Pinned notes: title bar turns red, note locks to z-index 9990 (always on top)
+     - Pinned notes cannot be dragged — click 📌 again to unpin
+     - Pin state persisted in localStorage with note data
+
+  5. PRINT REPORT — CHOOSE WHAT TO PRINT
+     - "Print Report" now opens a dialog instead of immediately printing
+     - Three checkboxes: Dashboard / Monthly Transactions / Charts
+     - "Monthly Transactions" auto-sets date filter to current month
+     - Selected sections get print-target CSS class; all others hidden
+     - @media print updated accordingly; date filter restored after print
+
+  6. NOTER.TXT (this file)
+     - Agent file tracking all version changes
+     - Saved at project root: Java-Fin/Noter.txt
+
+  7. OTHER IMPROVEMENTS
+     - showAbout version bumped to 1.1
+     - "🖼️ Image Gallery" added to Start Menu and Context Menu
+     - "Print Report…" wording updated with ellipsis throughout
+
+================================================================
+  CHECKPOINT v0.1  —  2026-04-10
+================================================================
+Status  : LOCKED (do not modify archived files)
+Archive : _archive/v0.1/
+Files   : index.html (99 KB, 2583 lines)
+          main.js    (4.6 KB)
+          preload.js (1.2 KB)
+          package.json (1.4 KB)
+
+Includes all features from Update 1.0 + Update 1.1:
+  ✅ Dashboard KPIs + recent transactions
+  ✅ Add Transaction (date, desc optional, amount, category, type, account)
+  ✅ Image upload + gallery window (🖼️)
+  ✅ Transaction History with filters + sort
+  ✅ Charts (7-day bar, category pie, 6-month line)
+  ✅ Sticky Notes with reactions, comments, pin feature
+  ✅ Print Report dialog (choose section to print)
+  ✅ Settings (currency, categories, data management)
+  ✅ Electron file persistence + localStorage fallback
+  ✅ Windows 95-98 style UI
+
+================================================================
+  VERSION 0.2  —  Update v0.2
+================================================================
+Date   : 2026-04-15
+Status : Released
+Branch : from Checkpoint v0.1
+
+Changes:
+  1. EDITABLE DESCRIPTION (double-click)
+     - Double-click any description cell in Dashboard or History
+     - Inline input appears; Enter to save, Escape to cancel
+     - Saves immediately to localStorage
+
+  2. IMAGE → IndexedDB MIGRATION
+     - Images now stored in IndexedDB (sv98_img_store) as blobs
+     - Transaction object holds only { hasImage: true, name }
+     - On boot: auto-migrates old base64-in-localStorage data
+     - Gallery uses async loadAll(); shows "Loading…" then renders
+
+  3. IMAGE COUNT BADGE on 🖼️ desktop icon
+     - Red badge shows number of images; hidden when 0
+
+  4. DELETE IMAGES from gallery
+     - Each image card has [✕ Del] button with confirm dialog
+     - Removes from IndexedDB + clears txn.image field
+
+  5. BUDGET TARGETS & WARNINGS
+     - Settings: "Monthly Budget Limits" panel per expense category
+     - Dashboard: "📊 Monthly Budget Status" progress bars
+       · Blue = OK (<80%), Orange = warning (≥80%), Red = over (≥100%)
+     - After adding an expense that exceeds limit: warning dialog shown
+
+  6. 🎮 MINESWEEPER
+     - Full Win98-style Minesweeper in its own window
+     - Difficulty: Beginner (9×9/10), Intermediate (16×16/40), Expert (30×16/99)
+     - Canvas-rendered grid, LCD mine counter + timer, smiley reset button
+     - Right-click to flag mines, flood-fill for zero-adjacency cells
+     - Win/lose overlays, best time saved per difficulty in localStorage
+     - Accessible via 🎮 Games desktop icon, Start Menu, or context menu
+
+  7. OTHER
+     - Version bumped to 0.2 in About dialog
+     - refreshAll() now calls renderBudgetPanel + updateImgBadge
+     - boot() runs IndexedDB migration before init()
+
+================================================================
+  PRE-DEPLOY POLISH PASS (v0.2 final)
+================================================================
+Date   : 2026-04-17
+Status : Released
+
+Quality pass before first production build — no new features, fixes only.
+
+Changes:
+  1. VERSION CONSISTENCY
+     - package.json 0.2.0, About dialog "Version 0.2", Noter.txt v0.2 — all confirmed consistent
+
+  2. UX POLISH (index.html)
+     - Description placeholder updated to "Enter description… (optional)" — clearer hint
+     - openWin('win-add') now auto-focuses the description field after 60 ms
+     - renderHist: null-guard on t.description → (t.description || '').toLowerCase()
+       prevents crash if a transaction has no description
+     - History table: shows "No transactions found" row when query returns 0 results
+     - Dashboard recent table: shows friendly onboarding message when no data exists
+     - toggleMax: added Mines.draw() call so Minesweeper canvas re-renders correctly
+       after a double-click maximize/restore on its title bar
+
+  3. BACKEND CLEANUP (main.js)
+     - saveReceipt / loadReceipt IPC handlers marked [LEGACY — v0.1 only] with comments
+       explaining they are no longer called by the v0.2 renderer (IndexedDB replaced them)
+     - Handlers retained for backward compatibility only
+
+  4. BUILD CONFIG (package.json)
+     - Added "!*.txt" to build files exclusion list → Noter.txt will not be bundled
+       into the installer (internal dev file, not needed by end-users)
+     - _archive/** was already excluded ✅
+
+================================================================
+  VERSION 0.3  —  Update v0.3
+================================================================
+Date   : 2026-04-17
+Status : Released
+Branch : from v0.2 final
+
+Changes:
+  1. STICKY NOTE REACTION BUTTON FIX  (bug)
+     - Emote buttons (👍 ❤️ 😂 😮) on sticky notes were unclickable.
+     - Root cause: rendered markup was
+         onclick="toggleReact(<id>,"👍")"
+       The JSON-stringified emoji injected a literal " inside a
+       double-quoted attribute, closing the onclick early so the
+       handler silently never fired.
+     - Fix: switched the onclick attribute wrapper to single quotes
+       in renderNote() and the toggleReact() re-render path, so the
+       inner "…" from JSON.stringify is preserved correctly.
+     - Files: index.html (renderNote + toggleReact).
+
+  2. RECURRING MANAGEMENT  (v0.3 Priority-2 feature from roadmap)
+     Data model
+       - New localStorage key `sv98_recurring` with DB helpers:
+         getRecurrings / saveRecurrings / addRecurring / patchRecurring
+         / delRecurring.
+       - Each rule stores:
+         { id, description, amount, category, type, account,
+           interval (daily|weekly|monthly), startDate, lastPosted,
+           active }.
+       - Key added to the Electron saveAllData payload and the boot
+         rehydrate path → survives restart and syncs to %APPDATA%.
+     Creation flow
+       - Add Transaction form unchanged from the user's POV: picking
+         Daily/Weekly/Monthly now creates a persistent rule instead
+         of cloning the next 3 instances up-front.
+       - The submitted transaction itself counts as the first post;
+         lastPosted = date.
+     Auto-post on boot
+       - New postOverdueRecurrings() walks every active rule and
+         posts one txn per missed interval from
+           advanceDate(lastPosted, interval) … today
+         Each posted txn is stamped with recurringRuleId.
+       - Runs inside boot() right after the IndexedDB image migration.
+     Management UI
+       - New "🔁 Recurring Rules" panel in Settings window.
+       - Rows show: type arrow, description + category/account,
+         amount, interval, last-posted date, active/paused badge.
+       - Per-row actions: Pause/Resume (toggleRecurring), ✕ Delete
+         (deleteRecurring — confirm dialog; already-posted txns are
+         kept).
+       - Panel is refreshed automatically by renderSettings() and
+         after creating a new rule from Add Transaction.
+
+  3. VERSION BUMP
+     - package.json           : 0.2.0 → 0.3.0
+     - About dialog           : "Version 0.2" → "Version 0.3"
+     - Noter.txt              : this section added
+
+================================================================
+  VERSION 0.4  —  Update v0.4.1  (Business / Freelancer Mode)
+================================================================
+Date   : 2026-04-17
+Status : Released
+Branch : from v0.3
+
+Overview
+  Expands Saver 98's use case beyond personal finance into small-
+  business and freelance scenarios. You can now carve out money
+  tracking per client, studio, or engagement — each with its own
+  sub-projects, documents, transactions, and budget — without
+  mixing into the main household ledger.
+
+Feature: PROJECTS
+  Data model (new localStorage key `sv98_projects`, synced to disk):
+    project       : { id, name, description, createdDate,
+                      subProjects: [...] }
+    subProject    : { id, name, description, createdDate,
+                      documents: [...],
+                      transactions: [...],
+                      budget: { total, categories } }
+    document      : { id, date, type (invoice|receipt|payment|
+                      contract|other), title, amount, note }
+    transaction   : { id, date, type (income=Received |
+                      expense=Paid), description, category,
+                      amount, note }
+
+  UI
+    • New "📁 Projects" desktop icon (top:688px) + Start Menu entry.
+    • Single resizable window `win-projects` (820×620, min 560×420)
+      with breadcrumb navigation and internal view state:
+        list → project → sub-project
+    • "List" view: card grid of all projects with KPI chips
+      (received / paid / net / sub-count / txn-count).
+
+  Project view (tabs)
+    📊 Dashboard     — KPI cards + recent activity across sub-projects
+                       (clickable to jump into the sub-project)
+    📂 Sub-Projects  — card grid; "+ New Sub-Project"; deep-link
+    💰 Budget        — overall spend bar + per-sub-project budget
+                       table with % used (blue/orange/red)
+
+  Sub-Project view (tabs)
+    📋 Overview      — description + KPI cards + created date
+    📄 Documents     — list (date, type, title, amount, note) +
+                       inline add form (type dropdown covers
+                       invoice / receipt / payment / contract /
+                       other); delete per row
+    💵 Paid/Received — list + inline add form (Received = income,
+                       Paid = expense); delete per row
+    💰 Budget        — set total budget + progress bar + remaining
+
+  CRUD helpers
+    Proj.promptNewProject / editProject / deleteProject
+    Proj.promptNewSub     / editSub     / deleteSub
+    Proj.addDoc           / deleteDoc
+    Proj.addTxn           / deleteTxn
+    Proj.saveSubBudget
+
+  Persistence
+    • DB.getProjects / saveProjects
+    • Electron file-sync payload extended with DB.PK
+    • Boot hydrate reads DB.PK from %APPDATA%
+    • Kept isolated from the main sv98_txn ledger — Project
+      transactions do NOT affect the Dashboard, History, Charts,
+      or main Budget warnings.
+
+  Helper: showInput(title, label, initial)
+    • Minimal Win98-style modal input prompt used for project /
+      sub-project naming and editing (keyboard: Enter = OK,
+      Escape = Cancel).
+
+Version bump
+  - package.json   : 0.3.0 → 0.4.0
+  - About dialog   : "Version 0.3" → "Version 0.4"
+  - Noter.txt      : this section added
+
+v0.4 POLISH PATCHES (2026-04-17)
+  A. Desktop icons no longer clip off-screen when the Electron
+     window is shortened. reflowDeskIcons() wraps icons into
+     multiple columns based on clientHeight; runs on init and
+     window resize. Sticky notes are excluded via :scope selector.
+  B. Charts window: new "Projects" tab. drawProjects(cv) renders
+     horizontal grouped bars (blue=Received, red=Paid) per project,
+     sorted by Net descending — reads only from DB.PK, does not
+     touch main ledger numbers.
+
+v0.4 PATCH 2 — 2026-04-17 (local-only, no cloud API)
+  1. Project / sub-project create flow consolidated: a single
+     modal dialog (showProjectForm) collects name + description
+     together instead of two sequential prompts. Reused by edit.
+
+  2. Sticky note "Archive" + Gallery redesign:
+     • New 🗃️ button on each sticky note title bar calls
+       archiveNote(id) — moves the note out of the live desktop
+       into DB.AK (`sv98_archived_notes`).
+     • "Images" desktop icon renamed to "🖼️ Gallery".
+       Gallery window now has a Win98 tab bar with two sections:
+         – Images  : slips/receipts (existing behavior)
+         – Archived: grid of saved sticky notes with
+                     Restore / Delete actions per card.
+     • restoreArchivedNote / deleteArchivedNote helpers.
+
+  3. User Profiles (local-only):
+     • New storage keys
+         DB.PRK = sv98_profiles        (list of profiles)
+         DB.APK = sv98_active_profile  (active id)
+     • PER_PROFILE_KEYS covers: transactions, settings/budgets,
+       sticky notes, recurring rules, projects, archived notes.
+       The profile system keys themselves are NOT per-profile
+       (so switching doesn't wipe the profile list).
+     • snapshotLiveProfile()   — freeze current localStorage into
+                                 the active profile's `data` slot.
+     • applyProfileSnapshot()  — hydrate localStorage from a
+                                 profile's frozen snapshot.
+     • ensureProfileSystem()   — first-run wrap: if no profiles
+                                 exist, create "Default" wrapping
+                                 existing data. Called in boot()
+                                 after hydrate, before init().
+     • switchProfile / addProfile / deleteProfile / renameProfile
+     • softReloadProfile()     — closes floating stickies, then
+                                 refreshes all views after switch.
+     • Taskbar: 👤 profile indicator chip between Start and
+       window list. Click → opens Settings scrolled to the
+       profile panel. updateProfileIndicator() runs on init
+       and after any profile mutation.
+     • Settings: "👤 User Profiles" panel above Data Management.
+       Lists profiles with Switch / Rename / Delete, plus
+       "+ New Profile" and "💾 Save Current" buttons.
+       Rendered by renderProfilePanel(), called from
+     renderSettings().
+     • Electron file-sync payload extended with DB.PRK + DB.APK;
+       boot hydrate reads both. Entire system is local-file /
+       localStorage — no cloud API.
+
+================================================================
+  CURRENT PROGRESS — Post-v0.4 Worktree
+================================================================
+Date   : 2026-04-18
+Status : In progress / unreleased
+Base   : package.json remains 0.4.0, About dialog remains "Version 0.4"
+
+What is already implemented in code:
+  1. OCR FOR RECEIPT / IMAGE ATTACHMENTS
+     - Add Transaction image panel now includes OCR actions.
+     - OCR language selector supports auto / Thai / English flows.
+     - Extracted OCR text can be reviewed before inserting into
+       the description field.
+     - OCR text is normalized/scored so the best candidate can be
+       chosen when multiple engines/variants are attempted.
+
+  2. IMAGE CROP TOOL FOR OCR
+     - New crop workflow lets the user select a smaller text area
+       before running OCR.
+     - Cropped image can be applied for OCR or restored back to the
+       original full image.
+     - Status messages guide selection size and crop state.
+
+  3. HYBRID OCR RUNTIME
+     - Desktop bridge in main.js exposes:
+         sv98:ocrInfo   → available native Windows OCR languages
+         sv98:ocrImage  → OCR against an image payload
+     - Windows builds can use native OCR via PowerShell/WinRT.
+     - Renderer also includes browser-side OCR helpers and fallback
+       selection logic for Thai + English extraction.
+     - Added OCR helper module: ocr-utils.js
+
+  4. EXPORT / DESKTOP INTEGRATION CLEANUP
+     - preload.js now exposes exportFile(), getOcrInfo(), and
+       ocrImage() to the renderer via contextBridge.
+     - main.js includes native save-dialog export handling for
+       CSV / JSON style file output.
+
+  5. APP UPDATE FOUNDATION
+     - electron-updater wired with safe defaults:
+       check after startup, download only after update availability
+       is confirmed, install on next quit.
+     - Logging is quiet/non-blocking and disabled in dev/unpackaged
+       mode.
+
+  6. TEST COVERAGE ADDED
+     - tests/run-tests.js verifies renderer-utils.js transaction
+       filtering / summaries / chart grouping.
+     - OCR utility scoring and candidate selection are also covered.
+     - Direct run via node tests/run-tests.js passes.
+
+Suggested next release label:
+  - v0.4.x patch release if OCR/export/update plumbing is considered
+    polish on top of the current product line.
+  - v0.5 if this work is grouped with a broader feature milestone.
+
+================================================================
+  ROADMAP — v0.4 (next)
+================================================================
+
+  [ ] PROJECTS: attach real files to documents (PDFs, receipt
+      images) via IndexedDB — currently metadata-only.
+  [ ] PROJECTS: per-sub-project category budgets (not just total).
+  [ ] PROJECTS: CSV/JSON export per project.
+  [ ] PROJECTS: invoice generator (print-friendly invoice from a
+      document entry).
+
+================================================================
+  ROADMAP — v0.5 (Future)
+================================================================
+Planned date : TBD
+Branch from  : Checkpoint v0.2 (TBD)
+
+─── PRIORITY 1 — Core Fixes & Polish ──────────────────────────
+
+  [✅ DONE in v0.2] IMAGE: Migrate from base64/localStorage → IndexedDB
+  [✅ DONE in v0.2] IMAGE: Delete individual images from gallery
+  [✅ DONE in v0.2] IMAGE: Count badge on 🖼️ desktop icon
+
+─── PRIORITY 2 — Financial Features ───────────────────────────
+
+  [✅ DONE in v0.3] RECURRING TRANSACTIONS  (management panel in Settings)
+      Delivered: persistent rules, boot-time auto-post, Pause/Resume,
+                 Delete, Electron file-sync.
+
+  [✅ DONE in v0.2] BUDGET TARGETS & WARNINGS
+
+─── PRIORITY 3 — 🎮 RETRO MINIGAMES ───────────────────────────
+
+  Concept : "Games" folder icon on desktop (🎮) opens a launcher
+            window. Each game opens in its own Win98-style window.
+            Fully authentic to Windows 98 spirit.
+
+  [✅ DONE in v0.2] MINESWEEPER
+
+  [ ] SOLITAIRE (Klondike) ★★ Second
+      Difficulty : Medium-hard (1-2 days)
+      Why        : THE iconic Win98 game. Card drag-and-drop, win
+                   animation (cascading cards). More complex but
+                   very rewarding.
+      Features   : Draw 1 or Draw 3 mode, undo, score counter,
+                   win animation (cards bouncing off screen).
+
+  [ ] SNAKE ★ Easy alternative
+      Difficulty : Easy (2-3 hrs)
+      Why        : Simple retro arcade; good filler between Minesweeper
+                   and Solitaire. Not Win98 canonical but fun.
+      Features   : Arrow key control, speed levels, high score.
+
+  [ ] SKIP for v0.2 — revisit later:
+      - Mario-like platformer (needs physics engine, sprites — full update)
+      - Jack-o-rabbit platformer (same complexity as Mario)
+
+─── PRIORITY 4 — UX & Performance ─────────────────────────────
+
+  [ ] DARK MODE toggle (Win98 dark theme — navy/charcoal palette)
+  [ ] Transaction EDIT (currently delete-only, no edit in place)
+  [ ] CSV export include image flag column
+  [ ] Keyboard shortcuts (Ctrl+N = new txn, Ctrl+P = print, etc.)
+  [ ] Taskbar window grouping when >5 windows open
+
+================================================================
+  DECISION LOG
+================================================================
+2026-04-10  Minigames approved — Minesweeper + Solitaire first.
+            Mario/Jack-o-rabbit deferred (too complex for single update).
+            Images to move to IndexedDB before gallery grows too large.
+            Recurring transactions + Budget warnings = main v0.2 features.
